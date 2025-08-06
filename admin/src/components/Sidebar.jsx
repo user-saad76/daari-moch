@@ -36,7 +36,7 @@ function Sidebar(){
           data-bs-toggle="dropdown"
         >
           <i className="fa fa-laptop me-2"></i>
-          Products & Categories
+          Products & Cate
         </a>
         <div className="dropdown-menu bg-transparent border-0">
           <Link to ="/add.category" className="dropdown-item">

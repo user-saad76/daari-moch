@@ -10,6 +10,7 @@ import DetailPage from "./pages/DetailPage";
 import {createContext} from 'react';
 import { useState,useEffect } from "react";
 import Contect from "./pages/Contect";
+import Topbar from "./components/TopBar";
 
 
 
@@ -40,8 +41,10 @@ function App() {
   return (
     <CartContext.Provider value ={{cart,setCart}}>
     <BrowserRouter>
-      <Navbar />
+      <Topbar/>
+    <Navbar/>
       <Routes>
+         <Route path="/index.html" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/cart" element={<Cart />} />
@@ -49,6 +52,7 @@ function App() {
         <Route path="/product/:slug" element={<DetailPage />} />
          <Route path="/contect" element={<Contect />} />
         <Route path="*" element={<NotFound />} />
+
       </Routes>
     </BrowserRouter>
     </CartContext.Provider>

@@ -9,20 +9,20 @@ function Cart() {
   };
 
   const handleDelete = (id) => {
-    const updatedCart = cart.filter(c => c.id !== id);
+    const updatedCart = cart.filter(c => c._id !== id);
     setCart(updatedCart);
   };
 
   const handleQtyIncrease = (cartitem) => {
     const updatedCart = cart.map(item =>
-      item.id === cartitem.id ? { ...item, qty: item.qty + 1 } : item
+      item._id === cartitem._id ? { ...item, qty: item.qty + 1 } : item
     );
     setCart(updatedCart);
   };
 
   const handleQtyDecrease = (cartitem) => {
     const updatedCart = cart.map(item => {
-      if (item.id === cartitem.id && item.qty > 1) {
+      if (item._id === cartitem._id && item.qty > 1) {
         return { ...item, qty: item.qty - 1 };
       }
       return item;
@@ -71,7 +71,7 @@ function Cart() {
               </td>
               <td>{(cartitem.price * cartitem.qty).toFixed(2)}</td>
               <td>
-                <button className='btn btn-danger' onClick={() => handleDelete(cartitem.id)}>
+                <button className='btn btn-danger' onClick={() => handleDelete(cartitem._id)}>
                   <i className="bi bi-trash3"></i>
                 </button>
               </td>

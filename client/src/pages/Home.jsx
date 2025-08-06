@@ -1,5 +1,12 @@
 import React,{useState,useEffect} from "react";
 import ProductCard from "../components/ProductCard";
+import Carousel from "../components/Carousel";
+import Features from "../components/Features";
+import Categories from "../components/Categories";
+import FeaturedProducts from "../components/FeaturedProducts";
+import SpecialOffers from "../components/SpecialOffers";
+import RecentProducts from "../components/RecentProducts";
+import Footer from "../components/Footer";
 //import { products } from "../data";
 
 function Home() {
@@ -10,7 +17,7 @@ function Home() {
   const [max , setMax] = useState(1000)
  
     const getProductsFromAPI = async()=>{
-        const res =   await fetch('https://fakestoreapi.com/products')
+        const res =   await fetch('http://localhost:7000/products')
          const data =  await res.json()
         setProducts(data)
        
@@ -50,32 +57,17 @@ function Home() {
      
       
     }
-
-
-
-
-
-
   return (
-      <div className="container ">
-        <input type="search" className="mb-3" onChange={handleSearch}/>
-        <button onClick={handleSearch}>Search</button>
-        <label htmlFor="">Filter by rating</label>
-        <input type="text" onChange={handlerating} />
-
-
-
-         <label htmlFor="">Filter by Price</label>
-        <input type="text" onChange={(e)=>setMin(e.target.value)}/>
-         <input type="text" onChange={(e)=>setMax(e.target.value)} />
-         <button onClick={handleprice}>filter Price</button>
-        <div className="row">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </div>
-  );
+     <>
+       <Carousel/>
+       <Features/>
+       <Categories/>
+       <FeaturedProducts/>
+       <SpecialOffers/>
+       <RecentProducts/>
+       <Footer/>
+     </>  
+  )
 }
 
 export default Home;

@@ -11,7 +11,7 @@ function ProductCard(props) {
    //console.log("Before imutation",cart)
    const handleAddToCart=(p)=>{
 
-    const foundItem = cart.find((i)=>i.id==p.id)
+    const foundItem = cart.find((i)=>i._id==p._id)
     if(!foundItem){
        p.qty = 1
         setCart([...cart,p])
@@ -26,7 +26,7 @@ function ProductCard(props) {
       <div className="card-body">
         <Link to={`/product/${props.product.slug}`}><h5 className="card-title">{ props.product.title }</h5></Link>
         <p className="card-text">Price.{props.product.price}</p>
-        <button href="#" className="btn btn-primary" disabled = {cart.find((i)=>i.id==props.product.id)?true:false} onClick={()=>handleAddToCart(props.product)} >ADD TO CART </button>
+        <button href="#" className="btn btn-primary" disabled = {cart.find((i)=>i._id==props.product._id)?true:false} onClick={()=>handleAddToCart(props.product)} >ADD TO CART </button>
        
          <Rating readonly = {true} allowFraction = {true} initialValue={props.product.rating.rate}/>
 

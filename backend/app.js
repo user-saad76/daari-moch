@@ -2,6 +2,7 @@ import express from 'express'
   const  app = express()
   import 'dotenv/config'
  import productRoutes from './routes/product.routes.js'
+ import CategoryRoutes from './routes/category.routes.js'
  import bodyParser from 'body-parser'
 import { connectDB } from './config/db.js'
 import cors from 'cors'
@@ -12,6 +13,7 @@ import cors from 'cors'
   app.use(cors())
   app.use(bodyParser.json())
   app.use( productRoutes)
+   app.use( CategoryRoutes)
  
 
   app.listen(port ,()=>{

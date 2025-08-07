@@ -36,14 +36,33 @@ export default function AddCategoryForm() {
     }
   };
 
-  const onSubmit = (data) => {
-    const payload = {
-      ...data,
-      image: imageFile,
-    };
-    console.log("Category Data:", payload);
-    alert("Category submitted! Check console for details.");
+ const onSubmit = async (data) => {
+  const payload = {
+    ...data,
+    image: imageFile,
   };
+
+  const formData = new FormData();
+  formData.append('title', data.title);
+  formData.append('isPublic', data.isPublic ? 'true' : 'false');
+
+  console.log("Category Data:", payload);
+  alert("Category submitted! Check console for details.");
+
+  const res = await fetch('http://localhost:7000/categories/add', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const result = await res.json(); // ✅ renamed from 'data' to 'result'
+  
+  if (res.ok) {
+    console.log('Category added:', result);
+  } else {
+    console.error('Server error:', result);
+  } 
+};
+
 
   return (
     <div className="container mt-5">

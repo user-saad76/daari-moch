@@ -45,6 +45,9 @@ export default function AddCategoryForm() {
   const formData = new FormData();
   formData.append('title', data.title);
   formData.append('isPublic', data.isPublic ? 'true' : 'false');
+   // if(data.image && data.image[0]){
+    //  formData.append('image',data.image[0])
+    // }
 
   console.log("Category Data:", payload);
   alert("Category submitted! Check console for details.");

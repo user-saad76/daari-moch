@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+ import { ToastContainer, toast } from 'react-toastify';
+ import {useRef} from 'react';
 
 // Zod schema
 const CategorySchema = z.object({
@@ -10,21 +12,31 @@ const CategorySchema = z.object({
   image: z.any().optional(),
 });
 
+
 export default function AddCategoryForm() {
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(CategorySchema),
     defaultValues: {
-      isPublic: true,
+      title:'',
+      image:null,
+      isPublic: false
     },
   });
 
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+    
+  const [loading,setLoading] = useState(false)
+  const fileInputRef =  useRef();
+
+
+
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -35,6 +47,8 @@ export default function AddCategoryForm() {
       setImagePreview(previewURL);
     }
   };
+
+
 
  const onSubmit = async (data) => {
   const payload = {
@@ -58,6 +72,8 @@ export default function AddCategoryForm() {
   console.log("Category Data:", payload);
   alert("Category submitted! Check console for details.");
 
+  setLoading(true)
+
   const res = await fetch('http://localhost:7000/categories/add', {
     method: 'POST',
     body: formData,
@@ -66,11 +82,16 @@ export default function AddCategoryForm() {
   const result = await res.json(); // ✅ renamed from 'data' to 'result'
   
   if (res.ok) {
-    console.log('Category added:', result);
+    toast.success(result.message)
+    reset()
+    fileInputRef.current.value = ""
+    
   } else {
-    console.error('Server error:', result);
+    toast.error(result.message)
   } 
+  setLoading(false)
 };
+
 
 
   return (
@@ -101,6 +122,10 @@ export default function AddCategoryForm() {
                 accept="image/*"
               className="form-control"
               onChange={handleImageChange}
+               ref={(e) =>{
+                register('image').ref(e);
+                fileInputRef.current = e;
+               }}
             />
             {imagePreview && (
               <img
@@ -128,11 +153,23 @@ export default function AddCategoryForm() {
 
           {/* Submit Button */}
           <div className="text-end">
-            <button type="submit" className="btn btn-primary px-4">
-              Submit
+            <button type="submit"  disabled = {loading} className="btn btn-primary px-4">
+             {loading ?'Saving....':'Submit'}
             </button>
           </div>
         </form>
+        <ToastContainer
+         position="top-center"
+          autoClose={5000}
+         hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+         rtl={false}
+         pauseOnFocusLoss
+         draggable
+          pauseOnHover
+        theme="light"
+         />
       </div>
     </div>
   );

@@ -36,20 +36,50 @@ export default function AddCategoryForm() {
     }
   };
 
-  const onSubmit = (data) => {
-    const payload = {
-      ...data,
-      image: imageFile,
-    };
-    console.log("Category Data:", payload);
-    alert("Category submitted! Check console for details.");
+ const onSubmit = async (data) => {
+  const payload = {
+    ...data,
+    image: imageFile,
   };
+
+  const formData = new FormData();
+  formData.append('title', data.title);
+  formData.append('isPublic', data.isPublic ? 'true' : 'false');
+    if (imageFile) {
+    formData.append('image', imageFile); // This must match .single('image') in backend
+  }
+
+
+  
+   // if(data.image && data.image[0]){
+    //  formData.append('image',data.image[0])
+    /// }
+
+  console.log("Category Data:", payload);
+  alert("Category submitted! Check console for details.");
+
+  const res = await fetch('http://localhost:7000/categories/add', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const result = await res.json(); // ✅ renamed from 'data' to 'result'
+  
+  if (res.ok) {
+    console.log('Category added:', result);
+  } else {
+    console.error('Server error:', result);
+  } 
+};
+
 
   return (
     <div className="container mt-5">
       <div className="bg-light p-4 shadow rounded">
         <h3 className="mb-4">Add New Category</h3>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}
+        enctype="multipart/form-data"
+        >
 
           {/* Category Title */}
           <div className="mb-3">
@@ -68,7 +98,7 @@ export default function AddCategoryForm() {
             <label className="form-label">Category Image</label>
             <input
               type="file"
-              accept="image/*"
+                accept="image/*"
               className="form-control"
               onChange={handleImageChange}
             />

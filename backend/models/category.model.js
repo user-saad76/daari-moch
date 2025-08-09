@@ -1,35 +1,18 @@
-const mongoose = require('mongoose');
-const slugify = require('slugify');
+import mongoose from "mongoose";
 
-const categorySchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Category title is required'],
-    trim: true,
-    unique: true
-  },
-  slug: {
-    type: String,
-    unique: true
-  },
-  image: {
-    type: String,
-    default: ''
-  },
-  isPublic: {
-    type: Boolean,
-    default: true
-  }
-}, {
-  timestamps: true
-});
+ const CategorySchema = new mongoose.Schema({
 
-// Middleware: Generate slug from title
-categorySchema.pre('save', function(next) {
-  if (this.isModified('title')) {
-    this.slug = slugify(this.title, { lower: true, strict: true });
-  }
-  next();
-});
+      title:String,
+      slug:String,
+      price: Number,
+      description:String,
+      category:String,
+      image:{
+        public_id:String,
+        secure_url:String
+      },
+      
+ });
 
-module.exports = mongoose.model('Category', categorySchema);
+   export  const Category = mongoose.model('Category',CategorySchema)
+   export default Category

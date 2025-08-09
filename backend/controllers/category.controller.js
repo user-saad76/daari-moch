@@ -1,14 +1,20 @@
 import Category from '../models/category.model.js'
+import multer from 'multer';
+import path from 'path';
+
+
+
+
  export  const createNewCategory = async (req,res)=>{
-
      console.log("Hello from the server")
-    // const data = req.body;
+     const { title, isPublic } = req.body;
+   const image = req.file;
+      console.log(image);
 
-     //await Category.create(data)
 
      res.json({
      message:' Create Categories endpoint called',
-      
+       
    })
   }
  

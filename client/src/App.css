@@ -1,0 +1,18 @@
+
+
+.card-wrapper{
+    display: flex;
+
+}
+.small-box{
+    background-color: yellow;
+}
+.card{
+    min-height: 100%;
+}
+.card img{
+    aspect-ratio: 1/.7%;
+    object-fit: cover;
+    height: 7rem;
+    object-position: top;
+}

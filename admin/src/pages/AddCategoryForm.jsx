@@ -1,0 +1,176 @@
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+ import { ToastContainer, toast } from 'react-toastify';
+ import {useRef} from 'react';
+
+// Zod schema
+const CategorySchema = z.object({
+  title: z.string().min(2, "Category title is required"),
+  isPublic: z.boolean().default(true),
+  image: z.any().optional(),
+});
+
+
+export default function AddCategoryForm() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(CategorySchema),
+    defaultValues: {
+      title:'',
+      image:null,
+      isPublic: false
+    },
+  });
+
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+    
+  const [loading,setLoading] = useState(false)
+  const fileInputRef =  useRef();
+
+
+
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setValue("image", file);
+      const previewURL = URL.createObjectURL(file);
+      setImagePreview(previewURL);
+    }
+  };
+
+
+
+ const onSubmit = async (data) => {
+  const payload = {
+    ...data,
+    image: imageFile,
+  };
+
+  const formData = new FormData();
+  formData.append('title', data.title);
+  formData.append('isPublic', data.isPublic ? 'true' : 'false');
+    if (imageFile) {
+    formData.append('image', imageFile); // This must match .single('image') in backend
+  }
+
+
+  
+   // if(data.image && data.image[0]){
+    //  formData.append('image',data.image[0])
+    /// }
+
+  console.log("Category Data:", payload);
+  alert("Category submitted! Check console for details.");
+
+  setLoading(true)
+
+  const res = await fetch('http://localhost:7000/categories/add', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const result = await res.json(); // ✅ renamed from 'data' to 'result'
+  
+  if (res.ok) {
+    toast.success(result.message)
+    reset()
+    fileInputRef.current.value = ""
+    
+  } else {
+    toast.error(result.message)
+  } 
+  setLoading(false)
+};
+
+
+
+  return (
+    <div className="container mt-5">
+      <div className="bg-light p-4 shadow rounded">
+        <h3 className="mb-4">Add New Category</h3>
+        <form onSubmit={handleSubmit(onSubmit)}
+        enctype="multipart/form-data"
+        >
+
+          {/* Category Title */}
+          <div className="mb-3">
+            <label className="form-label">Category Title</label>
+            <input
+              type="text"
+              className={`form-control ${errors.title ? "is-invalid" : ""}`}
+              placeholder="Enter category title"
+              {...register("title")}
+            />
+            {errors.title && <div className="invalid-feedback">{errors.title.message}</div>}
+          </div>
+
+          {/* Image Upload */}
+          <div className="mb-3">
+            <label className="form-label">Category Image</label>
+            <input
+              type="file"
+                accept="image/*"
+              className="form-control"
+              onChange={handleImageChange}
+               ref={(e) =>{
+                register('image').ref(e);
+                fileInputRef.current = e;
+               }}
+            />
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="img-thumbnail mt-2"
+                style={{ maxHeight: "150px" }}
+              />
+            )}
+          </div>
+
+          {/* Public/Private Toggle */}
+          <div className="form-check form-switch mb-4">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="isPublic"
+              defaultChecked
+              {...register("isPublic")}
+            />
+            <label className="form-check-label" htmlFor="isPublic">
+              Public Category
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <div className="text-end">
+            <button type="submit"  disabled = {loading} className="btn btn-primary px-4">
+             {loading ?'Saving....':'Submit'}
+            </button>
+          </div>
+        </form>
+        <ToastContainer
+         position="top-center"
+          autoClose={5000}
+         hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+         rtl={false}
+         pauseOnFocusLoss
+         draggable
+          pauseOnHover
+        theme="light"
+         />
+      </div>
+    </div>
+  );
+}
